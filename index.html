@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GMAT Exam Day Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- 
+        Chosen Palette: Calm Focus Palette
+        Application Structure Plan: A single-page, linear "digital checklist" design. The user scrolls through key details, an interactive timeline, a packing checklist, and an accordion for the exam process. This structure minimizes cognitive load and provides a clear, actionable guide for a stressful day.
+        Visualization & Content Choices: Timeline -> Interactive Checklist (HTML/JS) for progress tracking. Packing List -> Interactive Checklist (HTML/JS) for completeness. Exam Process -> Accordion (HTML/JS) to prevent info overload. Icons -> Unicode characters for scannability. This design supports the goal of providing a simple, calming, and interactive guide.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: #94a3b8; /* slate-400 */
+        }
+        .task-item.completed .task-time {
+            color: #94a3b8; /* slate-400 */
+        }
+        .task-item.completed .checkbox-custom {
+            background-color: #3b82f6; /* blue-500 */
+            border-color: #3b82f6; /* blue-500 */
+        }
+        .task-item.completed .checkbox-custom::after {
+            content: '✔';
+            color: white;
+            display: block;
+            text-align: center;
+            line-height: 1.25rem;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-button.open .accordion-arrow {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+    <div class="max-w-3xl mx-auto p-4 sm:p-6 md:p-8">
+
+        <header class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">GMAT Exam Day Plan</h1>
+            <p class="text-slate-500 mt-2">Wednesday, July 30, 2025</p>
+        </header>
+
+        <main class="space-y-8">
+            
+            <section id="exam-details" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <span class="text-2xl mr-3">📋</span> Confirmed Exam Details
+                </h2>
+                <div class="space-y-3 text-slate-700">
+                    <p><strong>Candidate:</strong> Mayank Chandrashekhar Deshpande</p>
+                    <p><strong>Appointment:</strong> 8:00 AM</p>
+                    <p><strong>Test Center:</strong> PEARSON PROFESSIONAL CENTERS-BANGALORE 2 KAR</p>
+                    <p><strong>Address:</strong> Prestige Atrium, Unit 101, Ground Floor, Central Street, Shivajinagar, Bangalore</p>
+                    <p><strong>Landmarks:</strong> Next to Golden Palm Canteen / Opposite Empire Restaurant</p>
+                </div>
+            </section>
+
+            <section id="timeline">
+                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <span class="text-2xl mr-3">🕒</span> Official Exam Day Timeline
+                </h2>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <ul class="space-y-4" id="timeline-list">
+                        <li class="task-item flex items-center cursor-pointer" data-type="timeline">
+                            <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                            <div class="flex-grow">
+                                <p class="task-text font-medium text-slate-800">Wake up</p>
+                                <p class="task-time text-sm text-slate-500">5:30 AM</p>
+                            </div>
+                        </li>
+                        <li class="task-item flex items-center cursor-pointer" data-type="timeline">
+                            <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                            <div class="flex-grow">
+                                <p class="task-text font-medium text-slate-800">Get Ready & Eat Breakfast</p>
+                                <p class="task-time text-sm text-slate-500">5:30 AM - 6:15 AM</p>
+                            </div>
+                        </li>
+                        <li class="task-item flex items-center cursor-pointer" data-type="timeline">
+                            <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                            <div class="flex-grow">
+                                <p class="task-text font-medium text-slate-800">Leave for Test Center</p>
+                                <p class="task-time text-sm text-slate-500">6:15 AM</p>
+                            </div>
+                        </li>
+                        <li class="task-item flex items-center cursor-pointer" data-type="timeline">
+                            <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                            <div class="flex-grow">
+                                <p class="task-text font-medium text-slate-800">Arrive at Test Center</p>
+                                <p class="task-time text-sm text-slate-500">7:15 AM - 7:30 AM</p>
+                            </div>
+                        </li>
+                        <li class="task-item flex items-center cursor-pointer" data-type="timeline">
+                            <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                            <div class="flex-grow">
+                                <p class="task-text font-medium text-slate-800">Check-in & Final Prep</p>
+                                <p class="task-time text-sm text-slate-500">7:30 AM - 8:00 AM</p>
+                            </div>
+                        </li>
+                         <li class="task-item flex items-center cursor-pointer" data-type="timeline">
+                            <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                            <div class="flex-grow">
+                                <p class="task-text font-bold text-blue-600">Exam Begins</p>
+                                <p class="task-time text-sm text-blue-500">8:00 AM</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="packing-list">
+                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <span class="text-2xl mr-3">🎒</span> What to Pack Checklist
+                </h2>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <div>
+                        <h3 class="font-semibold text-lg mb-3 text-red-600">Must-Have</h3>
+                        <ul class="space-y-4" id="must-have-list">
+                            <li class="task-item flex items-center cursor-pointer" data-type="pack">
+                                <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                                <p class="task-text flex-grow font-medium text-slate-800">Valid Passport (Name must match registration exactly)</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg mb-3 text-slate-800">For Your Locker</h3>
+                        <ul class="space-y-4" id="locker-list">
+                            <li class="task-item flex items-center cursor-pointer" data-type="pack">
+                                <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                                <p class="task-text flex-grow font-medium text-slate-800">Bottle of water</p>
+                            </li>
+                            <li class="task-item flex items-center cursor-pointer" data-type="pack">
+                                <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                                <p class="task-text flex-grow font-medium text-slate-800">Simple, quiet snack (e.g., banana, granola bar)</p>
+                            </li>
+                            <li class="task-item flex items-center cursor-pointer" data-type="pack">
+                                <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                                <p class="task-text flex-grow font-medium text-slate-800">Appointment confirmation email (printout)</p>
+                            </li>
+                             <li class="task-item flex items-center cursor-pointer" data-type="pack">
+                                <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                                <p class="task-text flex-grow font-medium text-slate-800">Any necessary medication</p>
+                            </li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="font-semibold text-lg mb-3 text-slate-800">What to Wear</h3>
+                        <ul class="space-y-4" id="wear-list">
+                            <li class="task-item flex items-center cursor-pointer" data-type="pack">
+                                <div class="checkbox-custom w-5 h-5 border-2 border-slate-300 rounded-md mr-4 transition-all flex-shrink-0"></div>
+                                <p class="task-text flex-grow font-medium text-slate-800">Comfortable, layered clothing</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="exam-process">
+                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <span class="text-2xl mr-3">⚙️</span> The Exam Center Process
+                </h2>
+                <div class="space-y-2" id="accordion-container">
+                    <div class="accordion-item bg-white border border-slate-200 rounded-xl">
+                        <button class="accordion-button w-full flex justify-between items-center p-4 text-left font-semibold">
+                            1. Arrival & ID Check
+                            <span class="accordion-arrow transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content px-4 pb-4 text-slate-600">
+                            <p>Present your passport to the test administrator. They will verify your identity and have you sign a digital agreement.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white border border-slate-200 rounded-xl">
+                        <button class="accordion-button w-full flex justify-between items-center p-4 text-left font-semibold">
+                            2. Security Procedures
+                            <span class="accordion-arrow transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content px-4 pb-4 text-slate-600">
+                            <p>They will take a digital photograph of you and a scan of your palm vein pattern. This is used to check you in and out of the testing room for breaks. You will be asked to empty your pockets.</p>
+                        </div>
+                    </div>
+                     <div class="accordion-item bg-white border border-slate-200 rounded-xl">
+                        <button class="accordion-button w-full flex justify-between items-center p-4 text-left font-semibold">
+                            3. Locker Assignment
+                            <span class="accordion-arrow transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content px-4 pb-4 text-slate-600">
+                            <p>You will be assigned a small locker to store all of your belongings (bag, phone, watch, wallet, water, snacks, etc.). Your phone must be turned off completely.</p>
+                        </div>
+                    </div>
+                     <div class="accordion-item bg-white border border-slate-200 rounded-xl">
+                        <button class="accordion-button w-full flex justify-between items-center p-4 text-left font-semibold">
+                            4. Entering the Room
+                            <span class="accordion-arrow transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content px-4 pb-4 text-slate-600">
+                            <p>The administrator will provide you with a laminated booklet (your "scratchpad") and special pens. They will then escort you to your assigned computer.</p>
+                        </div>
+                    </div>
+                     <div class="accordion-item bg-white border border-slate-200 rounded-xl">
+                        <button class="accordion-button w-full flex justify-between items-center p-4 text-left font-semibold">
+                            5. Starting the Exam
+                            <span class="accordion-arrow transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content px-4 pb-4 text-slate-600">
+                            <p>The administrator will log you in, and you will go through a short tutorial before your first section begins.</p>
+                        </div>
+                    </div>
+                    <div class="accordion-item bg-white border border-slate-200 rounded-xl">
+                        <button class="accordion-button w-full flex justify-between items-center p-4 text-left font-semibold">
+                            6. Breaks
+                            <span class="accordion-arrow transition-transform duration-300">▼</span>
+                        </button>
+                        <div class="accordion-content px-4 pb-4 text-slate-600">
+                            <p>When a section ends, your optional 10-minute break begins. You must raise your hand. The administrator will come and escort you out. You will need to scan your palm vein to exit and re-enter. You can access your locker during this time but must be back in your seat before the 10 minutes are up.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const taskItems = document.querySelectorAll('.task-item');
+            taskItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    item.classList.toggle('completed');
+                });
+            });
+
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    button.classList.toggle('open');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
