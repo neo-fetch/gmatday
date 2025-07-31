@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sonic Edit: Interactive Audio Toolkit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals & Soft Clay -->
+    <!-- Application Structure Plan: A task-oriented dashboard design is used over a linear report format to better serve a social media manager's workflow. The structure includes: 1) An interactive 'Architecture of Ambiance' section to quickly teach core principles. 2) A filterable 'Curated Playlist' to allow users to find specific audio vibes on demand. 3) An interactive 'Audio Matrix' for direct comparison. 4) An accordion-style 'Strategist's Toolkit' for actionable advice. This structure prioritizes user interaction and efficient task completion (finding a track, understanding a concept) over passive reading. -->
+    <!-- Visualization & Content Choices: Report Info: Core principles of luxury audio. -> Goal: Inform & Engage. -> Viz/Presentation: Interactive cards and a Chart.js bar chart for the ideal BPM range. -> Interaction: Click to reveal text. -> Justification: Breaks down complex ideas into digestible, interactive chunks. | Report Info: Curated track list. -> Goal: Organize & Compare. -> Viz/Presentation: Filterable card grid. -> Interaction: Filter by vibe, click for modal with details. -> Justification: Allows users to quickly find relevant tracks for a specific need. | Report Info: Comparison table. -> Goal: Compare. -> Viz/Presentation: Sortable HTML table. -> Interaction: Click table headers to sort. -> Justification: Enhances utility over a static table. | Report Info: Strategic advice. -> Goal: Organize & Inform. -> Viz/Presentation: Accordion component. -> Interaction: Click to expand/collapse. -> Justification: Presents dense information cleanly. All visualizations are built with Chart.js or HTML/CSS, adhering to the NO SVG/Mermaid constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4B4B4B;
+        }
+        .active-filter {
+            background-color: #D6C4B9 !important;
+            color: #FFFFFF !important;
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        .modal-content {
+            transition: transform 0.25s ease;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#6D5D53] tracking-tight">The Sonic Edit</h1>
+            <p class="mt-4 text-lg text-[#857267]">An Interactive Toolkit for Luxury Skincare Reel Audio</p>
+        </header>
+
+        <main>
+            <section id="architecture" class="mb-20">
+                <h2 class="text-3xl font-bold text-center mb-4 text-[#6D5D53]">The Architecture of Ambiance</h2>
+                <p class="text-center max-w-3xl mx-auto text-gray-600 mb-12">
+                    This section decodes the "luxury aesthetic" sound. Rather than a single genre, it's an atmosphere built from specific sonic elements. Interact with the components below to understand the foundational principles for selecting the perfect audio for your brand.
+                </p>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-xl mb-3 text-[#B59F90]">Tempo of Tranquility</h3>
+                        <p class="text-gray-600 mb-4">The speed of a track is critical. For luxury skincare, a slower tempo (60-90 BPM) mirrors a resting heart rate, creating a calm, contemplative state that allows viewers to appreciate product details.</p>
+                        <div class="chart-container">
+                            <canvas id="tempoChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-xl mb-3 text-[#B59F90]">Instrumentation of Indulgence</h3>
+                        <p class="text-gray-600">The texture of high-end sound comes from a blend of organic warmth and clean production. Key elements include:</p>
+                        <ul class="mt-4 space-y-2 text-gray-600 list-disc list-inside">
+                            <li>Minimalist Piano & Strings</li>
+                            <li>Lofi & Jazz Elements (vinyl crackle, sax)</li>
+                            <li>Ambient Synths & Subtle Rhythms</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-xl mb-3 text-[#B59F90]">Minimalism as a Statement</h3>
+                        <p class="text-gray-600">What's left out is as important as what's included. A minimalist arrangement conveys confidence and allows the product to be the hero, avoiding sensory overload and keeping the viewer's focus where it matters most.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="playlist" class="mb-20">
+                <h2 class="text-3xl font-bold text-center mb-4 text-[#6D5D53]">The Curated Playlist</h2>
+                 <p class="text-center max-w-3xl mx-auto text-gray-600 mb-8">
+                    Here is a vetted list of instrumental tracks aligned with the luxury aesthetic. Use the filters to explore tracks by their primary vibe, then click on any track to see a detailed analysis and creative application ideas for your next Reel.
+                </p>
+                <div id="filters" class="flex justify-center flex-wrap gap-3 mb-10">
+                    <button data-filter="all" class="filter-btn px-4 py-2 bg-white text-[#857267] rounded-full shadow-sm border border-gray-200 hover:bg-gray-50 active-filter">All Vibes</button>
+                    <button data-filter="Modern Minimalist" class="filter-btn px-4 py-2 bg-white text-[#857267] rounded-full shadow-sm border border-gray-200 hover:bg-gray-50">Modern Minimalist</button>
+                    <button data-filter="Lo-Fi Luxury Lounge" class="filter-btn px-4 py-2 bg-white text-[#857267] rounded-full shadow-sm border border-gray-200 hover:bg-gray-50">Lo-Fi Luxury Lounge</button>
+                    <button data-filter="Serene Sanctuary" class="filter-btn px-4 py-2 bg-white text-[#857267] rounded-full shadow-sm border border-gray-200 hover:bg-gray-50">Serene Sanctuary</button>
+                </div>
+                <div id="track-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </section>
+
+            <section id="matrix" class="mb-20">
+                <h2 class="text-3xl font-bold text-center mb-4 text-[#6D5D53]">The Audio Matrix</h2>
+                 <p class="text-center max-w-3xl mx-auto text-gray-600 mb-12">
+                    For a quick comparison, this interactive matrix distills the key details for each track. Click on the table headers to sort the tracks by title, vibe, or licensing considerations, helping you make a rapid, informed decision for your content.
+                </p>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 overflow-x-auto">
+                    <table id="track-table" class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="p-4 cursor-pointer">Track Title & Artist</th>
+                                <th class="p-4 cursor-pointer">Primary Vibe</th>
+                                <th class="p-4">Ideal Reel Concept</th>
+                                <th class="p-4 cursor-pointer">Licensing Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix-body">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="toolkit">
+                <h2 class="text-3xl font-bold text-center mb-4 text-[#6D5D53]">The Strategist's Toolkit</h2>
+                <p class="text-center max-w-3xl mx-auto text-gray-600 mb-12">
+                    Moving beyond single track choices to a cohesive audio identity is a strategic advantage. This toolkit provides actionable guidance on trend-spotting, navigating music licensing, and crafting a unique sonic signature for your brand. Click each topic to expand.
+                </p>
+                <div id="accordion" class="space-y-4 max-w-4xl mx-auto">
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden opacity-0">
+        <div id="modal-content" class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 transform scale-95">
+        </div>
+    </div>
+
+    <script>
+        const trackData = [
+            {
+                title: "Selfless (Instrumental)",
+                artist: "The Strokes",
+                vibe: "Modern Minimalist",
+                genre: "Indie Rock Instrumental",
+                trending: "Niche trend (~6.2K uses)",
+                concept: "Sleek product shots, GRWM routines, emotional before-and-afters.",
+                licensing: "Safe for organic Reels. Requires sync license for paid ads.",
+                analysis: "Leverages the cultural capital of an iconic indie band for a timeless and contemporary feel. Its 'dreamy' and 'emotive' tone provides a cooler, more artistic edge than traditional ambient music, aligning the brand with a discerning, culturally aware audience.",
+                application: "The emotive, slightly melancholic mood is perfect for 'slice of life' content. Ideal for a slow-motion macro shot of a serum drop, a quiet GRWM ritual, or an aesthetic montage with emotional weight."
+            },
+            {
+                title: "Wind Song",
+                artist: "Ludovico Einaudi",
+                vibe: "Modern Minimalist",
+                genre: "Modern Classical",
+                trending: "Perennially popular for 'dreamy' aesthetics.",
+                concept: "Sensory texture focus (creams, oils), elegant tutorials.",
+                licensing: "Safe for organic Reels. Requires sync license for paid ads.",
+                analysis: "As a leading figure in modern classical, Einaudi's work is synonymous with cinematic, emotionally resonant soundscapes. The minimalist piano creates a feeling that is luxurious, intimate, and profoundly personal.",
+                application: "Excels at underscoring the sensory experience of skincare. Ideal for visuals focusing on texture—the swirl of a cream, the glide of an oil. It can elevate simple, instructional content into a beautiful, serene visual moment."
+            },
+            {
+                title: "deep in it",
+                artist: "berlioz",
+                vibe: "Lo-Fi Luxury Lounge",
+                genre: "Lofi Jazz / Deep House",
+                trending: "Significant niche trend in beauty/lifestyle.",
+                concept: "Full skincare routines, 'day in the life' vlogs, unboxing.",
+                licensing: "Safe for organic Reels. Requires sync license for paid ads.",
+                analysis: "A masterful fusion of a smooth deep house rhythm with a soulful saxophone, all filtered through a warm, lofi production lens. It's simultaneously relaxing and rhythmically compelling, holding viewer attention effectively.",
+                application: "Its versatile, mid-tempo groove suits a wide range of formats. Excellent for dynamic GRWMs, multi-step routine tutorials, or vlogs that embed the product in a chic lifestyle. The beat supports both slow and quick cuts."
+            },
+            {
+                title: "city",
+                artist: "massobeats",
+                vibe: "Lo-Fi Luxury Lounge",
+                genre: "Lofi Jazz",
+                trending: "Marketed as 'Luxury Chill Lofi Jazz Beat'.",
+                concept: "Elegant unboxing, product line showcase, voiceovers.",
+                licensing: "Royalty-free. Safe for paid ads with proper license.",
+                analysis: "This track perfectly encapsulates the desired aesthetic: modern and chill, yet imbued with the timeless sophistication of jazz. Its availability on royalty-free platforms is a crucial advantage for commercial use.",
+                application: "Ideal for content that needs a premium yet approachable feel. Perfect sonic backdrop for an elegant unboxing, a showcase of a new collection in a luxury setting, or as an understated audio bed for a voiceover on ingredients."
+            },
+            {
+                title: "Chilled Summer",
+                artist: "Vinyl Noise",
+                vibe: "Serene Sanctuary",
+                genre: "Latin-Inspired Instrumental",
+                trending: "Trending for 'aesthetic' and 'peaceful' moments.",
+                concept: "Weekend self-care rituals, cozy home scenes, relaxation.",
+                licensing: "Safe for organic Reels. Requires sync license for paid ads.",
+                analysis: "This Latin-inspired instrumental offers a 'relaxed, understated vibe'. The subtle influence adds warmth and worldly elegance, evoking a luxurious, sun-drenched vacation. It's about creating a serene, inviting mood.",
+                application: "Pairs beautifully with visuals of serene environments or reflective personal moments. For skincare, this means Reels of self-care rituals, a slow-motion shot of steam from a facial cloth, or promoting wellness products."
+            },
+            {
+                title: "Lady Love (Instrumental)",
+                artist: "The Sacred Souls",
+                vibe: "Serene Sanctuary",
+                genre: "Soul Instrumental",
+                trending: "Recommended for 'aesthetic videos'.",
+                concept: "'Top shelf' features, facial massage tutorials, UGC montages.",
+                licensing: "Safe for organic Reels. Requires sync license for paid ads.",
+                analysis: "Rooted in classic soul, this track has a warm, rich, and analog feel that is both comforting and deeply stylish. It evokes a sense of timeless quality and authenticity, setting it apart from more sterile ambient tracks.",
+                application: "Use to create a warm, inviting, and personal Reel. Excellent choice for a 'top shelf' video showcasing curated favorites, scoring a facial massage tutorial, or a montage of user-generated content enjoying skincare rituals."
+            }
+        ];
+
+        const toolkitData = [
+            {
+                title: "Discovering the Next Wave: Proactive Trend-Spotting",
+                content: "To stay ahead, monitor trends across multiple platforms. On Instagram, use the 'Save Audio' function on posts from other luxury and wellness creators. On TikTok, search hashtags like #skincareasmr and #aestheticmusic to see what's emerging. On YouTube and Spotify, search for playlists like 'Luxury Chill Lofi' and 'Beauty Vlog Music' to find curated, high-quality instrumental tracks."
+            },
+            {
+                title: "The Commercial Clause: Navigating Music Licensing",
+                content: "This is a critical consideration. For **organic, non-promoted Reels**, you can generally use audio from Instagram's licensed library. However, the moment a Reel is used in a **paid ad or sponsored post**, that license no longer applies. For ANY commercial use, you MUST use music from a royalty-free service like Epidemic Sound, Uppbeat, or Bensound to avoid copyright infringement. Always check the license terms."
+            },
+            {
+                title: "Crafting Your Sonic Signature: Building a Cohesive Brand Sound",
+                content: "Develop a recognizable audio identity. Create a private 'Sonic Signature' playlist on Spotify or YouTube with tracks that embody your brand's aesthetic. Use the 80/20 rule: 80% of your Reels should use audio from this core signature, while 20% can experiment with adjacent trends. This consistency reinforces brand recognition and builds equity with every play."
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const trackGrid = document.getElementById('track-grid');
+            const matrixBody = document.getElementById('matrix-body');
+            const filters = document.getElementById('filters');
+            const modal = document.getElementById('modal');
+            const modalContent = document.getElementById('modal-content');
+            const accordionContainer = document.getElementById('accordion');
+
+            function renderTracks(filter = 'all') {
+                trackGrid.innerHTML = '';
+                const filteredTracks = filter === 'all' ? trackData : trackData.filter(t => t.vibe === filter);
+
+                filteredTracks.forEach((track, index) => {
+                    const trackEl = document.createElement('div');
+                    trackEl.className = 'bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between';
+                    trackEl.innerHTML = `
+                        <div>
+                            <span class="inline-block bg-[#EAE5E2] text-[#857267] px-3 py-1 rounded-full text-sm font-semibold mb-3">${track.vibe}</span>
+                            <h3 class="text-2xl font-bold text-[#6D5D53]">${track.title}</h3>
+                            <p class="text-md text-gray-500 mb-4">${track.artist}</p>
+                        </div>
+                        <button data-index="${index}" class="details-btn mt-4 w-full bg-[#D6C4B9] text-white font-bold py-2 px-4 rounded-lg hover:bg-[#C8B5A9] transition-colors">
+                            View Details
+                        </button>
+                    `;
+                    trackGrid.appendChild(trackEl);
+                });
+            }
+
+            function renderMatrix() {
+                matrixBody.innerHTML = '';
+                trackData.forEach(track => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-gray-100 last:border-b-0';
+                    row.innerHTML = `
+                        <td class="p-4 font-semibold text-[#6D5D53]">${track.title}<br><span class="font-normal text-gray-500">${track.artist}</span></td>
+                        <td class="p-4"><span class="inline-block bg-[#EAE5E2] text-[#857267] px-3 py-1 rounded-full text-sm font-semibold">${track.vibe}</span></td>
+                        <td class="p-4 text-gray-600">${track.concept}</td>
+                        <td class="p-4 text-gray-600">${track.licensing}</td>
+                    `;
+                    matrixBody.appendChild(row);
+                });
+            }
+
+            function renderAccordion() {
+                toolkitData.forEach((item, index) => {
+                    const accordionItem = document.createElement('div');
+                    accordionItem.className = 'bg-white rounded-xl shadow-sm border border-gray-100';
+                    accordionItem.innerHTML = `
+                        <button class="accordion-toggle w-full flex justify-between items-center text-left p-6">
+                            <h3 class="font-bold text-lg text-[#6D5D53]">${item.title}</h3>
+                            <span class="text-[#B59F90] text-2xl transform transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content px-6">
+                            <p class="pb-6 text-gray-600">${item.content}</p>
+                        </div>
+                    `;
+                    accordionContainer.appendChild(accordionItem);
+                });
+            }
+
+            function openModal(index) {
+                const track = trackData.find(t => trackData.indexOf(t) === index);
+                if (!track) return;
+
+                modalContent.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="inline-block bg-[#EAE5E2] text-[#857267] px-3 py-1 rounded-full text-sm font-semibold mb-3">${track.vibe}</span>
+                            <h2 class="text-3xl font-bold text-[#6D5D53]">${track.title}</h2>
+                            <p class="text-lg text-gray-500 mb-6">${track.artist}</p>
+                        </div>
+                        <button id="close-modal" class="text-3xl text-gray-400 hover:text-gray-600">&times;</button>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="font-bold text-md text-[#B59F90] uppercase tracking-wider mb-2">Analysis</h4>
+                            <p class="text-gray-700">${track.analysis}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-md text-[#B59F90] uppercase tracking-wider mb-2">Creative Application</h4>
+                            <p class="text-gray-700">${track.application}</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+                             <div>
+                                <h4 class="font-bold text-md text-[#B59F90] uppercase tracking-wider mb-2">Genre</h4>
+                                <p class="text-gray-700">${track.genre}</p>
+                            </div>
+                             <div>
+                                <h4 class="font-bold text-md text-[#B59F90] uppercase tracking-wider mb-2">Trending Status</h4>
+                                <p class="text-gray-700">${track.trending}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modalContent.classList.remove('scale-95');
+                }, 10);
+            }
+
+            function closeModal() {
+                modal.classList.add('opacity-0');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 250);
+            }
+            
+            filters.addEventListener('click', (e) => {
+                if (e.target.classList.contains('filter-btn')) {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active-filter'));
+                    e.target.classList.add('active-filter');
+                    const filterValue = e.target.getAttribute('data-filter');
+                    renderTracks(filterValue);
+                }
+            });
+
+            trackGrid.addEventListener('click', (e) => {
+                const button = e.target.closest('.details-btn');
+                if (button) {
+                    const index = parseInt(button.getAttribute('data-index'));
+                    openModal(index);
+                }
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target.id === 'modal' || e.target.closest('#close-modal')) {
+                    closeModal();
+                }
+            });
+            
+            accordionContainer.addEventListener('click', (e) => {
+                const toggle = e.target.closest('.accordion-toggle');
+                if (toggle) {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('span');
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                        icon.style.transform = 'rotate(0deg)';
+                    } else {
+                        document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
+                        document.querySelectorAll('.accordion-toggle span').forEach(i => i.style.transform = 'rotate(0deg)');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                        icon.style.transform = 'rotate(45deg)';
+                    }
+                }
+            });
+
+            const tempoChartCtx = document.getElementById('tempoChart').getContext('2d');
+            new Chart(tempoChartCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Ideal BPM Range'],
+                    datasets: [{
+                        label: 'BPM',
+                        data: [90],
+                        backgroundColor: ['#D6C4B9'],
+                        borderColor: ['#C8B5A9'],
+                        borderWidth: 1,
+                        barPercentage: 0.5,
+                        categoryPercentage: 1.0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 150,
+                            grid: { display: false },
+                            ticks: {
+                                font: {
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                font: {
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    xMin: 60,
+                                    xMax: 60,
+                                    borderColor: 'rgba(75, 75, 75, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6]
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            renderTracks();
+            renderMatrix();
+            renderAccordion();
+        });
+    </script>
+</body>
+</html>
