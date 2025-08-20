@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Master</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #000000);
+            color: #f0f0f0;
+        }
+        .glassy {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glassy:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        .fade-in-delay-1 { animation-delay: 0.2s; opacity: 0; }
+        .fade-in-delay-2 { animation-delay: 0.4s; opacity: 0; }
+        .fade-in-delay-3 { animation-delay: 0.6s; opacity: 0; }
+        .slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .grid-cell {
+            transition: all 0.3s ease;
+        }
+        .grid-cell:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="app" class="w-full max-w-md mx-auto">
+
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="text-center space-y-8">
+            <div class="fade-in fade-in-delay-1">
+                <h1 class="text-5xl font-thin tracking-wider">Master Multiples</h1>
+                <p class="text-gray-400 font-light mt-2">A visual approach to learning</p>
+            </div>
+            <div class="glassy rounded-2xl p-8 fade-in fade-in-delay-2">
+                <label for="tableNumber" class="block text-lg font-light mb-4">Which multiplication table do you want to master?</label>
+                <input type="number" id="tableNumber" class="w-full bg-transparent border-b-2 border-gray-500 text-white text-4xl text-center font-light focus:outline-none focus:border-white transition duration-300 p-2" placeholder="e.g., 17">
+            </div>
+            <button id="startButton" class="w-full btn-primary text-white font-light py-4 rounded-xl text-xl tracking-widest fade-in fade-in-delay-3">Begin Journey</button>
+        </div>
+
+        <!-- Learning Screen -->
+        <div id="learningScreen" class="hidden">
+            <!-- Header will be dynamically generated -->
+            <div id="learningHeader" class="text-center mb-8 slide-up"></div>
+            
+            <div class="space-y-6">
+                <!-- Step 1: Visual Grid -->
+                <div id="step1" class="glassy rounded-2xl p-6 slide-up" style="animation-delay: 0.2s;">
+                    <h3 class="text-2xl font-light mb-4 flex items-center">
+                        <span class="bg-white/10 rounded-full w-8 h-8 flex items-center justify-center mr-3 font-semibold">1</span> The Visual Matrix
+                    </h3>
+                    <p class="text-gray-300 font-light mb-4">See the patterns. The table for <span class="font-semibold" id="tableNum1"></span> is part of a larger visual map.</p>
+                    <div id="visualGrid" class="grid grid-cols-4 gap-3 text-center"></div>
+                </div>
+
+                <!-- Step 2: Decomposition -->
+                <div id="step2" class="glassy rounded-2xl p-6 slide-up" style="animation-delay: 0.4s;">
+                    <h3 class="text-2xl font-light mb-4 flex items-center">
+                        <span class="bg-white/10 rounded-full w-8 h-8 flex items-center justify-center mr-3 font-semibold">2</span> Deconstruct & Conquer
+                    </h3>
+                    <p class="text-gray-300 font-light mb-4">Break it down. Complex problems are just simple steps combined.</p>
+                    <div id="decomposition" class="font-light text-lg space-y-3"></div>
+                </div>
+
+                <!-- Step 3: Mnemonics for "Awkward" Facts -->
+                <div id="step3" class="glassy rounded-2xl p-6 slide-up" style="animation-delay: 0.6s;">
+                     <h3 class="text-2xl font-light mb-4 flex items-center">
+                        <span class="bg-white/10 rounded-full w-8 h-8 flex items-center justify-center mr-3 font-semibold">3</span> Memory Anchors
+                    </h3>
+                    <p class="text-gray-300 font-light mb-4">For the tricky ones, a story makes it stick. Here's a mnemonic for a tough fact in this table:</p>
+                    <div id="mnemonic" class="glassy rounded-xl p-4 italic text-gray-200 border-l-2 border-white/30"></div>
+                </div>
+            </div>
+            <button id="backButton" class="w-full mt-8 btn-primary text-white font-light py-3 rounded-xl text-lg tracking-widest slide-up" style="animation-delay: 0.8s;">Choose Another Table</button>
+        </div>
+
+        <!-- Techniques Screen (for numbers > 24) -->
+        <div id="techniquesScreen" class="hidden">
+            <div class="text-center mb-8 slide-up">
+                <h2 class="text-4xl font-thin tracking-wider">Advanced Learning</h2>
+                <p class="text-gray-400 font-light mt-2">Beyond the basics</p>
+            </div>
+            <div class="glassy rounded-2xl p-6 space-y-6 font-light text-gray-300 slide-up" style="animation-delay: 0.2s;">
+                <p>Mastering large multiplication tables isn't just about rote memorization. It's about understanding the cognitive science behind learning.</p>
+                <div>
+                    <h3 class="font-semibold text-white text-lg mb-2">Dual Coding Theory</h3>
+                    <p>Your brain processes information through two channels: verbal (numbers, words) and non-verbal (images, patterns). By combining numbers with visual patterns and stories, we create multiple pathways to the answer, making it much easier to recall.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-white text-lg mb-2">Cognitive Load Theory</h3>
+                    <p>Working memory is limited. We use techniques like 'decomposition' (breaking problems down) to reduce mental strain. Instead of solving <span class="font-mono">18 x 17</span> at once, we think <span class="font-mono">(20 x 17) - (2 x 17)</span>. This offloads the heavy lifting and makes calculation manageable.</p>
+                </div>
+                 <div>
+                    <h3 class="font-semibold text-white text-lg mb-2">Visual Mnemonics</h3>
+                    <p>For particularly "awkward" facts (like the product of two large primes), we anchor them to memorable stories. A narrative is far easier for our brains to store and retrieve than an abstract set of numbers.</p>
+                </div>
+            </div>
+            <button id="backButton2" class="w-full mt-8 btn-primary text-white font-light py-3 rounded-xl text-lg tracking-widest slide-up" style="animation-delay: 0.4s;">Back to Start</button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const learningScreen = document.getElementById('learningScreen');
+        const techniquesScreen = document.getElementById('techniquesScreen');
+        const startButton = document.getElementById('startButton');
+        const backButton = document.getElementById('backButton');
+        const backButton2 = document.getElementById('backButton2');
+        const tableNumberInput = document.getElementById('tableNumber');
+
+        // --- Data from Mult.pdf ---
+        const decompositionStrategies = {
+            12: { name: "Place Value", formula: "(10 × N) + (2 × N)" },
+            13: { name: "Place Value", formula: "(10 × N) + (3 × N)" },
+            14: { name: "Doubling", formula: "(7 × N) × 2" },
+            15: { name: "10 + Half", formula: "(10 × N) + (5 × N)" },
+            16: { name: "Doubling", formula: "(8 × N) × 2" },
+            17: { name: "Compensation", formula: "(20 × N) - (3 × N)" },
+            18: { name: "Compensation", formula: "(20 × N) - (2 × N)" },
+            19: { name: "Compensation", formula: "(20 × N) - (1 × N)" },
+            20: { name: "Anchor", formula: "(N × 2) and add a zero" },
+            21: { name: "Place Value", formula: "(20 × N) + (1 × N)" },
+            22: { name: "Doubling", formula: "(11 × N) × 2" },
+            23: { name: "Place Value", formula: "(20 × N) + (3 × N)" },
+            24: { name: "Doubling", formula: "(12 × N) × 2" },
+        };
+
+        const mnemonics = {
+            13: { fact: "13 × 17", product: 221, story: "A 13-year-old tries to impress a 17-year-old. He juggles 2 bowling pins, then 2 more, but drops 1 on his foot." },
+            14: { fact: "14 × 16", product: 224, story: "On Valentine's Day (Feb 14), a girl gets a 'sweet 16' gift: 2 tickets, 2 backstage passes, and a limo for 4 hours." },
+            15: { fact: "15 × 19", product: 285, story: "A 15-year-old is trying to finish a 19-level game. They get stuck on level 2 for 8 hours and 5 minutes." }, // Example, not in PDF
+            16: { fact: "16 × 19", product: 304, story: "A video game has 16 levels. The final boss, a dragon with 19 heads, is on level 16. It takes 304 hits to defeat it." },
+            17: { fact: "17 × 23", product: 391, story: "Secret agent 17 has to defuse a bomb in 23 seconds. He sees 3 wires, snips the 9th one, and saves 1 life: his own." },
+            18: { fact: "18 × 23", product: 414, story: "An 18-year-old is moving to college. They pack 23 boxes, but 4 are for books, 1 is for clothes, and 4 are for snacks."}, // Example
+            19: { fact: "19 × 23", product: 437, story: "A 19-year-old crams for a test on 23 chapters. He studies for 4 hours, drinks 3 cups of coffee, and feels like a 7 out of 10." },
+            21: { fact: "21 × 23", product: 483, story: "A blackjack player (21) plays against a dealer who is 23. The player gets 4 aces, an 8-card straight, and wins 3 hands in a row." },
+            22: { fact: "22 × 17", product: 374, story: "A ballerina (tutu/22) dances with 17 swans. They perform for 3 audiences, 7 times, for 4 days."}, // Example
+            23: { fact: "23 × 23", product: 529, story: "Two twin mountain climbers, both 23 years old, decide to climb a 5,290-foot peak together." },
+        };
+        
+        // --- Functions ---
+        function showScreen(screen) {
+            welcomeScreen.classList.add('hidden');
+            learningScreen.classList.add('hidden');
+            techniquesScreen.classList.add('hidden');
+            screen.classList.remove('hidden');
+        }
+
+        function generateLearningContent(num) {
+            // 1. Header
+            const header = document.getElementById('learningHeader');
+            header.innerHTML = `
+                <h2 class="text-4xl font-thin tracking-wider">The Table of ${num}</h2>
+                <p class="text-gray-400 font-light mt-2">Let's master it, visually.</p>
+            `;
+            document.getElementById('tableNum1').textContent = num;
+
+            // 2. Visual Grid
+            const gridContainer = document.getElementById('visualGrid');
+            gridContainer.innerHTML = '';
+            const multipliers = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+            // Show a relevant subset
+            const numIndex = multipliers.indexOf(num);
+            const start = Math.max(0, numIndex - 5);
+            const end = Math.min(multipliers.length, start + 12);
+            const gridMultipliers = multipliers.slice(start, end);
+
+            gridMultipliers.forEach(m => {
+                const product = num * m;
+                const isPerfectSquare = (num === m);
+                const isAnchor = (m === 15 || m === 20 || m === 24);
+
+                let cellClasses = 'glassy rounded-lg p-3 grid-cell ';
+                if (isPerfectSquare) {
+                    cellClasses += 'border-2 border-orange-400/50 text-orange-300';
+                } else if (isAnchor) {
+                    cellClasses += 'border-2 border-blue-400/50 text-blue-300';
+                }
+
+                gridContainer.innerHTML += `
+                    <div class="${cellClasses}">
+                        <div class="font-light text-xs text-gray-400">${num} × ${m}</div>
+                        <div class="font-semibold text-2xl">${product}</div>
+                    </div>
+                `;
+            });
+
+            // 3. Decomposition Strategy
+            const decompositionContainer = document.getElementById('decomposition');
+            const strategy = decompositionStrategies[num] || { name: 'General Method', formula: 'Break into smaller, known facts.' };
+            decompositionContainer.innerHTML = `
+                <p><span class="font-semibold text-white">${strategy.name} Strategy:</span></p>
+                <div class="glassy rounded-lg p-4 mt-2 text-center text-xl tracking-wider font-mono bg-black/20">${strategy.formula}</div>
+                <p class="text-gray-400 text-sm mt-2">Example: To find ${num} × 17, you calculate ${strategy.formula.replace(/N/g, '17')}</p>
+            `;
+
+            // 4. Mnemonic
+            const mnemonicContainer = document.getElementById('mnemonic');
+            const mnemonic = mnemonics[num] || { fact: `${num} × ${num > 20 ? 17 : 19}`, product: num * (num > 20 ? 17 : 19), story: "Create your own memorable story for this fact to lock it in your memory!" };
+            mnemonicContainer.innerHTML = `
+                <p class="font-semibold text-lg text-white mb-2">${mnemonic.fact} = ${mnemonic.product}</p>
+                <p>"${mnemonic.story}"</p>
+            `;
+        }
+
+        // --- Event Listeners ---
+        startButton.addEventListener('click', () => {
+            const num = parseInt(tableNumberInput.value);
+            if (!num) return;
+
+            if (num > 24) {
+                showScreen(techniquesScreen);
+            } else {
+                // Ensure number is within the documented range for specific strategies
+                const validNum = Math.max(12, Math.min(24, num));
+                generateLearningContent(validNum);
+                showScreen(learningScreen);
+            }
+        });
+        
+        tableNumberInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                startButton.click();
+            }
+        });
+
+        backButton.addEventListener('click', () => showScreen(welcomeScreen));
+        backButton2.addEventListener('click', () => showScreen(welcomeScreen));
+
+    </script>
+</body>
+</html>
